@@ -211,7 +211,7 @@ contract SmartVaultV3 is ISmartVault {
             0 : calculator.eurToToken(getToken(_outTokenSymbol), requiredCollateralValue - collateralValueMinusSwapValue);
     }
 
-    function swap(bytes32 _inToken, bytes32 _outToken, uint256 _amount) external onlyOwner {
+    function swap(bytes32 _inToken, bytes32 _outToken, uint256 _amount, uint256 _deadline) external onlyOwner {
         uint256 swapFee = _amount * ISmartVaultManagerV3(manager).swapFeeRate() / ISmartVaultManagerV3(manager).HUNDRED_PC();
         address inToken = getSwapAddressFor(_inToken);
         uint256 minimumAmountOut = calculateMinimumAmountOut(_inToken, _outToken, _amount);
@@ -220,7 +220,7 @@ contract SmartVaultV3 is ISmartVault {
                 tokenOut: getSwapAddressFor(_outToken),
                 fee: 3000,
                 recipient: address(this),
-                deadline: block.timestamp,
+                deadline: block.timestamp + _deadline,
                 amountIn: _amount - swapFee,
                 amountOutMinimum: minimumAmountOut,
                 sqrtPriceLimitX96: 0
