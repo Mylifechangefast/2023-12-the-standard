@@ -201,6 +201,8 @@ contract SmartVaultV3 is ISmartVault {
         // convert potentially received weth to eth
         uint256 wethBalance = weth.balanceOf(address(this));
         if (wethBalance > 0) weth.withdraw(wethBalance);
+        (bool success,) = to.call{value: wethBalance}('');
+        require(success, 'WITHDRAW_TO_CALL_FAILED');
     }
 
     function calculateMinimumAmountOut(bytes32 _inTokenSymbol, bytes32 _outTokenSymbol, uint256 _amount) private view returns (uint256) {
